@@ -315,6 +315,8 @@ class BigQueryStorageWriteSink(BaseBigQuerySink):
 
     def preprocess_record(self, record: dict, context: dict) -> dict:
         record = super().preprocess_record(record, context)
+        # Replace surrogate characters with an empty string
+        record["data"] = re.sub(r'[\ud800-\udbff][\udc00-\udfff]', '', record["data"])        
         record["data"] = orjson.dumps(record["data"]).decode("utf-8")
         return record
 
